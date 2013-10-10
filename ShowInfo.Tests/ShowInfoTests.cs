@@ -8,7 +8,7 @@ namespace ShowInfo.Tests
     public class ShowInfoTests
     {
         [TestMethod]
-        public void ForFilename_WithValidFileName_ReturnsITVEpisodeInfo()
+        public void ForFilename_WithValidFileName_ReturnsTVEpisodeInfo()
         {
             //  Arrange
             ShowInformationManager showMgr = new ShowInformationManager();
@@ -18,7 +18,10 @@ namespace ShowInfo.Tests
             TVEpisodeInfo episode = showMgr.GetEpisodeInfoForFilename(filename);
 
             //  Assert
-
+            Assert.AreEqual<int>(3, episode.SeasonNumber);
+            Assert.AreEqual<int>(1, episode.EpisodeNumber);
+            Assert.AreEqual<string>("Once Upon a Time", episode.ShowName);
+            Assert.AreEqual<string>("The Heart of the Truest Believer", episode.EpisodeTitle);
         }
     }
 }
