@@ -9,8 +9,8 @@ namespace TheTVDBShowInfo
 {
     public class TVDBEpisodeInfo
     {
-        public string EpisodeNumber { get; set; }
-        public string SeasonNumber { get; set; }
+        public int EpisodeNumber { get; set; }
+        public int SeasonNumber { get; set; }
 
         [XmlElement(ElementName = "FirstAired")]
         public DateTime OriginalAirDate { get; set; }

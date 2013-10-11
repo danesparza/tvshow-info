@@ -62,6 +62,10 @@
       <Project>{44fc61f4-5e7f-484e-84fa-84c2931fff57}</Project>
       <Name>ShowInfo</Name>
     </ProjectReference>
+    <ProjectReference Include="..\TheTVDBShowInfo\TheTVDBShowInfo.csproj">
+      <Project>{c3570356-576c-41c1-b0c5-f5454a5ee513}</Project>
+      <Name>TheTVDBShowInfo</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">

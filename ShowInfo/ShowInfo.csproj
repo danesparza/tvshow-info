@@ -45,17 +45,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\RoviShowInfo\RoviShowInfo.csproj">
-      <Project>{8cac2c7b-b9a2-478a-b71f-45146da09b8a}</Project>
-      <Name>RoviShowInfo</Name>
-    </ProjectReference>
     <ProjectReference Include="..\ShowInfoProvider\ShowInfoProvider.csproj">
       <Project>{9f4e4955-1ec1-49f7-af33-e0a03bf140bc}</Project>
       <Name>ShowInfoProvider</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\TheTVDBShowInfo\TheTVDBShowInfo.csproj">
-      <Project>{c3570356-576c-41c1-b0c5-f5454a5ee513}</Project>
-      <Name>TheTVDBShowInfo</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

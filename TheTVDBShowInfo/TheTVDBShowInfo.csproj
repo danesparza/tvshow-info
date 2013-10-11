@@ -44,6 +44,7 @@
     <Compile Include="TheTVDBInfoProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TVDBEpisodeInfo.cs" />
+    <Compile Include="TVDBSeriesInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ShowInfoProvider\ShowInfoProvider.csproj">
