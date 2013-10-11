@@ -40,5 +40,37 @@ namespace ShowInfo.Tests
             Assert.AreEqual<string>("The Colbert Report", episode.ShowName);
             Assert.AreEqual<string>("Vince Gilligan", episode.EpisodeTitle);
         }
+
+        [TestMethod]
+        public void GetEpisode_WithValidSeasonEpisode_ReturnsTVEpisode()
+        {
+            //  Arrange
+            ShowInformationManager showMgr = new ShowInformationManager();
+
+            //  Act
+            TVEpisodeInfo episode = showMgr.GetEpisodeInfo("The Colbert Report", 10, 1);
+
+            //  Assert
+            Assert.AreEqual<int>(10, episode.SeasonNumber);
+            Assert.AreEqual<int>(1, episode.EpisodeNumber);
+            Assert.AreEqual<string>("The Colbert Report", episode.ShowName);
+            Assert.AreEqual<string>("Vince Gilligan", episode.EpisodeTitle);
+        }
+
+        [TestMethod]
+        public void GetEpisode_WithValidAirdate_ReturnsTVEpisode()
+        {
+            //  Arrange
+            ShowInformationManager showMgr = new ShowInformationManager();
+
+            //  Act
+            TVEpisodeInfo episode = showMgr.GetEpisodeInfo("The Colbert Report", 2013, 9, 30);
+
+            //  Assert
+            Assert.AreEqual<int>(10, episode.SeasonNumber);
+            Assert.AreEqual<int>(1, episode.EpisodeNumber);
+            Assert.AreEqual<string>("The Colbert Report", episode.ShowName);
+            Assert.AreEqual<string>("Vince Gilligan", episode.EpisodeTitle);
+        }
     }
 }

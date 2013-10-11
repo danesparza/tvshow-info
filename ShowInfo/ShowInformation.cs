@@ -139,7 +139,54 @@ namespace ShowInfo
             return retval;
         }
 
-        
+        /// <summary>
+        /// Gets show information for a given show / season / episode
+        /// </summary>
+        /// <param name="showName">The TV show name to get information for</param>
+        /// <param name="season">The show season</param>
+        /// <param name="episode">The show episode within the season</param>
+        /// <returns></returns>
+        public TVEpisodeInfo GetEpisodeInfo(string showName, int season, int episode)
+        {
+            //  Create our new episode information:
+            TVEpisodeInfo retval = null;
+
+            foreach(var provider in SEShowInfoProviders)
+            {
+                retval = provider.GetShowInfo(showName, season, episode);
+
+                //  If we found our information, get out
+                if(retval != null)
+                    break;
+            }
+
+            return retval;
+        }
+
+        /// <summary>
+        /// Get show information for a given show / airdate
+        /// </summary>
+        /// <param name="showName">The TV show name to get information for</param>
+        /// <param name="year">The show airdate year</param>
+        /// <param name="month">The show airdate month</param>
+        /// <param name="day">The show airdate day</param>
+        /// <returns></returns>
+        public TVEpisodeInfo GetEpisodeInfo(string showName, int year, int month, int day)
+        {
+            //  Create our new episode information:
+            TVEpisodeInfo retval = null;
+
+            foreach(var provider in ADShowInfoProviders)
+            {
+                retval = provider.GetShowInfo(showName, year, month, day);
+
+                //  If we found our information, get out
+                if(retval != null)
+                    break;
+            }
+
+            return retval;
+        }
     }
 
     /// <summary>
