@@ -11,6 +11,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Providers", "Providers", "{
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoviShowInfo", "RoviShowInfo\RoviShowInfo.csproj", "{8CAC2C7B-B9A2-478A-B71F-45146DA09B8A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheTVDBShowInfo", "TheTVDBShowInfo\TheTVDBShowInfo.csproj", "{C3570356-576C-41C1-B0C5-F5454A5EE513}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,11 +35,16 @@ Global
 		{8CAC2C7B-B9A2-478A-B71F-45146DA09B8A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8CAC2C7B-B9A2-478A-B71F-45146DA09B8A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8CAC2C7B-B9A2-478A-B71F-45146DA09B8A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C3570356-576C-41C1-B0C5-F5454A5EE513}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C3570356-576C-41C1-B0C5-F5454A5EE513}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C3570356-576C-41C1-B0C5-F5454A5EE513}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C3570356-576C-41C1-B0C5-F5454A5EE513}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{8CAC2C7B-B9A2-478A-B71F-45146DA09B8A} = {82DEA3C3-E9F4-449C-AA35-EA5C727139F1}
+		{C3570356-576C-41C1-B0C5-F5454A5EE513} = {82DEA3C3-E9F4-449C-AA35-EA5C727139F1}
 	EndGlobalSection
 EndGlobal

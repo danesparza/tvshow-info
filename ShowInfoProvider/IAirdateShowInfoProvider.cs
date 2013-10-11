@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ShowInfoProvider
 {
-    interface IAirdateShowInfoProvider
+    public interface IAirdateShowInfoProvider
     {
         TVEpisodeInfo GetShowInfo(string showName, int year, int month, int day);
     }

@@ -18,6 +18,9 @@ namespace ShowInfo
         [ImportMany]
         public IEnumerable<ISeasonEpisodeShowInfoProvider> SEShowInfoProviders { get; set; }
 
+        [ImportMany]
+        public IEnumerable<IAirdateShowInfoProvider> ADShowInfoProviders { get; set; }
+
         private void Compose()
         {
             var catalog = new AggregateCatalog();
