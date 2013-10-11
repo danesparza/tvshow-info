@@ -40,7 +40,7 @@ namespace RoviShowInfo
             //  If we can't find it, throw an exception
             if(string.IsNullOrEmpty(this.APIKey) || string.IsNullOrEmpty(this.APISecret))
             {
-                throw new ApplicationException("Missing Rovi API key or secret.  Please include the Rovi_APIKey and Rovi_APISecret the the application config");
+                throw new ApplicationException("Missing Rovi API key or secret.  Please include the Rovi_APIKey and Rovi_APISecret in the application config");
                 return retval;
             }
 
