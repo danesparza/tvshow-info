@@ -78,53 +78,77 @@ namespace ShowInfo
             var seMatch = rxSE.Match(filename);
             var seMatch2 = rxSE2.Match(filename);
             var dMatch = rxD.Match(filename);
+            var currentParseType = ParseType.Unknown;
 
             //  See how we made out...
             if(seMatch.Success)
             {
+                currentParseType = ParseType.SeasonEpisode;
                 parsedShowName = Regex.Replace(seMatch.Groups["series_name"].ToString().Trim(), @"[\W]|_", " ");
-                parsedSeasonNumber = Convert.ToInt32(seMatch.Groups["season_num"].Value);
-                parsedEpisodeNumber = Convert.ToInt32(seMatch.Groups["ep_num"].Value);
-            }
-            else if(seMatch2.Success)
-            {
-                parsedShowName = Regex.Replace(seMatch2.Groups["series_name"].ToString().Trim(), @"[\W]|_", " ");
                 parsedSeasonNumber = Convert.ToInt32(seMatch.Groups["season_num"].Value);
                 parsedEpisodeNumber = Convert.ToInt32(seMatch.Groups["ep_num"].Value);
             }
             //  See if we have a year/month/day match:
             else if(dMatch.Success)
             {
+                currentParseType = ParseType.Airdate;
                 parsedShowName = Regex.Replace(dMatch.Groups["series_name"].ToString().Trim(), @"[\W]|_", " ");
-                parsedAirdateYear = Convert.ToInt32(seMatch.Groups["year"].Value);
-                parsedAirdateMonth = Convert.ToInt32(seMatch.Groups["month"].Value);
-                parsedAirdateDay = Convert.ToInt32(seMatch.Groups["day"].Value);
+                parsedAirdateYear = Convert.ToInt32(dMatch.Groups["year"].Value);
+                parsedAirdateMonth = Convert.ToInt32(dMatch.Groups["month"].Value);
+                parsedAirdateDay = Convert.ToInt32(dMatch.Groups["day"].Value);
             }
-
-            //  If it parses to a show/season/episode, get 
-            //  information from the SEShowInfoProviders
-            if(seMatch.Success || seMatch2.Success)
+            //  Try an alternate S/E match
+            else if(seMatch2.Success)
             {
-                foreach(var provider in SEShowInfoProviders)
-                {
-                    retval = provider.GetShowInfo(parsedShowName, parsedSeasonNumber, parsedEpisodeNumber);
-
-                    //  If we found our information, get out
-                    if(retval != null)
-                        break;
-                }
+                currentParseType = ParseType.SeasonEpisode;
+                parsedShowName = Regex.Replace(seMatch2.Groups["series_name"].ToString().Trim(), @"[\W]|_", " ");
+                parsedSeasonNumber = Convert.ToInt32(seMatch2.Groups["season_num"].Value);
+                parsedEpisodeNumber = Convert.ToInt32(seMatch2.Groups["ep_num"].Value);
             }
 
-            //  If it parses to show/airdate, get information
-            //  from the ADShowInfoProviders
-            if(dMatch.Success)
-            { 
-                
+            //  Based on the type of information parsed, use either 
+            //  season/episode data providers or airdate data providers
+            switch(currentParseType)
+            {
+                case ParseType.SeasonEpisode:
+                    //  If it parses to a show/season/episode, get 
+                    //  information from the SEShowInfoProviders
+                    foreach(var provider in SEShowInfoProviders)
+                    {
+                        retval = provider.GetShowInfo(parsedShowName, parsedSeasonNumber, parsedEpisodeNumber);
+
+                        //  If we found our information, get out
+                        if(retval != null)
+                            break;
+                    }
+                    break;
+                case ParseType.Airdate:
+                    //  If it parses to show/airdate, get information
+                    //  from the ADShowInfoProviders
+                    foreach(var provider in ADShowInfoProviders)
+                    {
+                        retval = provider.GetShowInfo(parsedShowName, parsedAirdateYear, parsedAirdateMonth, parsedAirdateDay);
+
+                        //  If we found our information, get out
+                        if(retval != null)
+                            break;
+                    }
+                    break;
             }
 
             return retval;
         }
 
         
+    }
+
+    /// <summary>
+    /// The different ways a filename can be parsed
+    /// </summary>
+    enum ParseType
+    {
+        Unknown,
+        SeasonEpisode,
+        Airdate
     }
 }

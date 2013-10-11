@@ -8,7 +8,7 @@ namespace ShowInfo.Tests
     public class ShowInfoTests
     {
         [TestMethod]
-        public void ForFilename_WithValidFileName_ReturnsTVEpisodeInfo()
+        public void ForFilename_WithValidSEFileName_ReturnsTVEpisodeInfo()
         {
             //  Arrange
             ShowInformationManager showMgr = new ShowInformationManager();
@@ -22,6 +22,23 @@ namespace ShowInfo.Tests
             Assert.AreEqual<int>(1, episode.EpisodeNumber);
             Assert.AreEqual<string>("Once Upon a Time", episode.ShowName);
             Assert.AreEqual<string>("The Heart of the Truest Believer", episode.EpisodeTitle);
+        }
+
+        [TestMethod]
+        public void ForFilename_WithValidAirdateFileName_ReturnsTVEpisodeInfo()
+        {
+            //  Arrange
+            ShowInformationManager showMgr = new ShowInformationManager();
+            string filename = "The.Colbert.Report.2013.09.30.Vince.Gilligan.HDTV.x264-2HD.mp4";
+
+            //  Act
+            TVEpisodeInfo episode = showMgr.GetEpisodeInfoForFilename(filename);
+
+            //  Assert
+            Assert.AreEqual<int>(10, episode.SeasonNumber);
+            Assert.AreEqual<int>(1, episode.EpisodeNumber);
+            Assert.AreEqual<string>("The Colbert Report", episode.ShowName);
+            Assert.AreEqual<string>("Vince Gilligan", episode.EpisodeTitle);
         }
     }
 }
