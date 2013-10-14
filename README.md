@@ -23,5 +23,5 @@ Quickstart to using the library in .NET
 	    //  Assert
 	    Assert.AreEqual<int>(3, episode.SeasonNumber);
 	    Assert.AreEqual<int>(1, episode.EpisodeNumber);
-	    Assert.AreEqual<string>("Once Upon a Time", episode.ShowName);
+	    Assert.AreEqual<string>("Once Upon a Time (2011)", episode.ShowName); /* Changes when using an alias */
 	    Assert.AreEqual<string>("The Heart of the Truest Believer", episode.EpisodeTitle);
