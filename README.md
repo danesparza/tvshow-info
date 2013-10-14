@@ -8,8 +8,8 @@ Uses a [MEF](http://msdn.microsoft.com/en-us/library/dd460648.aspx)-based provid
 Quickstart to using the library in .NET
 -----------------
 
-1. Add a reference to the library in your project
-2. Set the 'PluginDirectory' configuration value in your app.config or web.config.  The plugin directory is where the information provider plugin .dll's are located.  TVShow-info ships with 2 providers: Rovi and TheTVDB.
+1. Add a reference to the ShowInfo.dll library in your project or [install the NuGet package](https://www.nuget.org/packages/TV-show-info/)
+2. Make sure the provider plugin .dlls are in the same directory as your executing assembly.  TVShow-info ships with 2 providers: Rovi and TheTVDB.
 3. Set the appropriate configuration values for your providers (like API keys) in the app.config or web.config.
 4. Write code that uses the library:
 
