@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
 using System.Configuration;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -39,11 +41,50 @@ namespace ShowInfo
 
         #endregion
 
+        private string currentPath = string.Empty;
+
+        /// <summary>
+        /// Our list of customizable show 'aliases'
+        /// </summary>
+        private List<ShowAlias> showAliases = new List<ShowAlias>();
+
+        /// <summary>
+        /// Loads the aliases from the alias file.  This allows us to map
+        /// one TVshow name to another -- like 'Castle' to 'Castle (2009)'
+        /// </summary>
+        private void LoadAliases()
+        {
+            //  If the show alias file exists, load it up:
+            currentPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+
+            try
+            {
+                string aliasFile = ConfigurationManager.AppSettings["AliasFile"];
+                if(string.IsNullOrEmpty(aliasFile))
+                    aliasFile = "showalias.json";
+
+                //  If the alias file exists, open it:
+                if(File.Exists(Path.Combine(currentPath, aliasFile)))
+                {
+                    //  TODO: Open the file and laod the aliases
+
+                }
+            }
+            catch(Exception ex)
+            {
+                /* Silently fail */
+            }
+        }
+
         /// <summary>
         /// Default constructor
         /// </summary>
         public ShowInformationManager()
         {
+            //  Load our aliases
+            LoadAliases();
+
+            //  Load our provider plugins
             Compose();
         }
 
