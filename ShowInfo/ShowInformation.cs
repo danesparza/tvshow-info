@@ -10,6 +10,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using ShowInfoProvider;
+using ServiceStack.Text;
 
 namespace ShowInfo
 {
@@ -43,6 +44,8 @@ namespace ShowInfo
 
         private string currentPath = string.Empty;
 
+        #region Aliases
+        
         /// <summary>
         /// Our list of customizable show 'aliases'
         /// </summary>
@@ -56,6 +59,7 @@ namespace ShowInfo
         {
             //  If the show alias file exists, load it up:
             currentPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            string data = string.Empty;
 
             try
             {
@@ -66,8 +70,9 @@ namespace ShowInfo
                 //  If the alias file exists, open it:
                 if(File.Exists(Path.Combine(currentPath, aliasFile)))
                 {
-                    //  TODO: Open the file and laod the aliases
-
+                    //  Open the file and load the aliases
+                    data = File.ReadAllText(Path.Combine(currentPath, aliasFile));
+                    showAliases = data.FromJson<List<ShowAlias>>();
                 }
             }
             catch(Exception ex)
@@ -75,6 +80,27 @@ namespace ShowInfo
                 /* Silently fail */
             }
         }
+
+        /// <summary>
+        /// If an alias exists, the show's alias is returned.  If the show has no alias,
+        /// the original show name is returned
+        /// </summary>
+        /// <param name="showName">The show name to check</param>
+        /// <returns></returns>
+        private string ResolveShowToAlias(string showName)
+        {
+            string retval = showName;
+
+            //  If the given show has an alias, return it
+            if(this.showAliases.Where(s => s.Show == showName).Any())
+            {
+                retval = showAliases.Where(s => s.Show == showName).Select(s => s.Alias).FirstOrDefault();
+            }
+
+            return retval;
+        }
+
+        #endregion
 
         /// <summary>
         /// Default constructor
@@ -147,6 +173,9 @@ namespace ShowInfo
                 parsedEpisodeNumber = Convert.ToInt32(seMatch2.Groups["ep_num"].Value);
             }
 
+            //  Resolve the show alias (if it exists)
+            parsedShowName = ResolveShowToAlias(parsedShowName);
+
             //  Based on the type of information parsed, use either 
             //  season/episode data providers or airdate data providers
             switch(currentParseType)
@@ -192,6 +221,9 @@ namespace ShowInfo
             //  Create our new episode information:
             TVEpisodeInfo retval = null;
 
+            //  Resolve the show alias (if it exists)
+            showName = ResolveShowToAlias(showName);
+
             foreach(var provider in SEShowInfoProviders)
             {
                 retval = provider.GetShowInfo(showName, season, episode);
@@ -216,6 +248,9 @@ namespace ShowInfo
         {
             //  Create our new episode information:
             TVEpisodeInfo retval = null;
+
+            //  Resolve the show alias (if it exists)
+            showName = ResolveShowToAlias(showName);
 
             foreach(var provider in ADShowInfoProviders)
             {

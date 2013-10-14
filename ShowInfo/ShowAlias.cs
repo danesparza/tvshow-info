@@ -10,10 +10,10 @@ namespace ShowInfo
     [DataContract]
     public class ShowAlias
     {
-        [DataMember]
+        [DataMember(Name="Show")]
         public string Show { get; set; }
         
-        [DataMember]
+        [DataMember(Name="Alias")]
         public string Alias { get; set; }
     }
 }

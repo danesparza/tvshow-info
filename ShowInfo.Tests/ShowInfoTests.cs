@@ -20,7 +20,7 @@ namespace ShowInfo.Tests
             //  Assert
             Assert.AreEqual<int>(3, episode.SeasonNumber);
             Assert.AreEqual<int>(1, episode.EpisodeNumber);
-            Assert.AreEqual<string>("Once Upon a Time", episode.ShowName);
+            Assert.AreEqual<string>("Once Upon a Time (2011)", episode.ShowName);
             Assert.AreEqual<string>("The Heart of the Truest Believer", episode.EpisodeTitle);
         }
 
@@ -71,6 +71,22 @@ namespace ShowInfo.Tests
             Assert.AreEqual<int>(1, episode.EpisodeNumber);
             Assert.AreEqual<string>("The Colbert Report", episode.ShowName);
             Assert.AreEqual<string>("Vince Gilligan", episode.EpisodeTitle);
+        }
+
+        [TestMethod]
+        public void GetEpisode_WithAliasValidSeasonEpisode_ReturnsTVEpisode()
+        {
+            //  Arrange
+            ShowInformationManager showMgr = new ShowInformationManager();
+
+            //  Act
+            TVEpisodeInfo episode = showMgr.GetEpisodeInfo("Once Upon a Time", 3, 2);
+
+            //  Assert
+            Assert.AreEqual<int>(3, episode.SeasonNumber);
+            Assert.AreEqual<int>(2, episode.EpisodeNumber);
+            Assert.AreEqual<string>("Once Upon a Time (2011)", episode.ShowName); /* Notice this changes */
+            Assert.AreEqual<string>("Lost Girl", episode.EpisodeTitle);
         }
     }
 }
