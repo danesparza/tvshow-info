@@ -92,27 +92,30 @@ namespace TheTVDBShowInfo
             //  Get the seriesId for the show
             string seriesId = GetSeriesIdForShow(showName);
 
-            //  Get the episode information using the seriesId, airdate
-            string apiUrl = string.Format("http://thetvdb.com/api/GetEpisodeByAirDate.php?apikey={0}&seriesid={1}&airdate={2}-{3}-{4}",
-                this.APIKey,
-                seriesId,
-                year,
-                month,
-                day);
-
-            TVDBEpisodeResult response = GetAPIResponse<TVDBEpisodeResult>(apiUrl);
-
-            if(response != null)
+            if(!string.IsNullOrEmpty(seriesId))
             {
-                retval = new TVEpisodeInfo()
+                //  Get the episode information using the seriesId, airdate
+                string apiUrl = string.Format("http://thetvdb.com/api/GetEpisodeByAirDate.php?apikey={0}&seriesid={1}&airdate={2}-{3}-{4}",
+                    this.APIKey,
+                    seriesId,
+                    year,
+                    month,
+                    day);
+
+                TVDBEpisodeResult response = GetAPIResponse<TVDBEpisodeResult>(apiUrl);
+
+                if(response != null)
                 {
-                    EpisodeNumber = response.EpisodeInfo.EpisodeNumber,
-                    EpisodeSummary = response.EpisodeInfo.EpisodeSummary,
-                    EpisodeTitle = response.EpisodeInfo.EpisodeName,
-                    OriginalAirDate = response.EpisodeInfo.OriginalAirDate,
-                    SeasonNumber = response.EpisodeInfo.SeasonNumber,
-                    ShowName = showName
-                };
+                    retval = new TVEpisodeInfo()
+                    {
+                        EpisodeNumber = response.EpisodeInfo.EpisodeNumber,
+                        EpisodeSummary = response.EpisodeInfo.EpisodeSummary,
+                        EpisodeTitle = response.EpisodeInfo.EpisodeName,
+                        OriginalAirDate = response.EpisodeInfo.OriginalAirDate,
+                        SeasonNumber = response.EpisodeInfo.SeasonNumber,
+                        ShowName = showName
+                    };
+                }
             }
 
             return retval;
@@ -132,13 +135,13 @@ namespace TheTVDBShowInfo
             string retval = string.Empty;
 
             //  The formatted API url to call
-            string apiUrl = string.Format("http://thetvdb.com/api/GetSeries.php?seriesname={0}", showName);
+            string apiUrl = string.Format("http://thetvdb.com/api/GetSeries.php?seriesname={0}&apikey={1}", showName, this.APIKey);
 
             //  Call the API
             TVDBSeriesResult response = GetAPIResponse<TVDBSeriesResult>(apiUrl);
 
             //  If we have valid (deserialized) data
-            if(response != null)
+            if(response != null && response.SeriesInfo != null)
                 retval = response.SeriesInfo.SeriesId;
 
             return retval;

@@ -29,16 +29,16 @@ namespace ShowInfo.Tests
         {
             //  Arrange
             ShowInformationManager showMgr = new ShowInformationManager();
-            string filename = "The.Colbert.Report.2013.09.30.Vince.Gilligan.HDTV.x264-2HD.mp4";
+            string filename = "The.Colbert.Report.2013.10.10.Reed.Albergotti.and.Vanessa.OConnell.HDTV.x264-LMAO.mp4";
 
             //  Act
             TVEpisodeInfo episode = showMgr.GetEpisodeInfoForFilename(filename);
 
             //  Assert
             Assert.AreEqual<int>(10, episode.SeasonNumber);
-            Assert.AreEqual<int>(1, episode.EpisodeNumber);
+            Assert.AreEqual<int>(8, episode.EpisodeNumber);
             Assert.AreEqual<string>("The Colbert Report", episode.ShowName);
-            Assert.AreEqual<string>("Vince Gilligan", episode.EpisodeTitle);
+            Assert.AreEqual<string>("Reed Albergotti & Vanessa O'Connell", episode.EpisodeTitle);
         }
 
         [TestMethod]
