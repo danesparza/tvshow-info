@@ -42,26 +42,30 @@ namespace TheTVDBShowInfo
             //  Get the seriesId for the show
             string seriesId = GetSeriesIdForShow(showName);
 
-            //  Get the episode information using the API key, seriesId, season, episode
-            string apiUrl = string.Format("http://thetvdb.com/api/{0}/series/{1}/default/{2}/{3}", 
-                this.APIKey,
-                seriesId, 
-                season, 
-                episode);
-
-            TVDBEpisodeResult response = GetAPIResponse<TVDBEpisodeResult>(apiUrl);
-
-            if(response != null)
+            //  If we were able to get the seriesId...
+            if(!string.IsNullOrEmpty(seriesId))
             {
-                retval = new TVEpisodeInfo()
+                //  Get the episode information using the API key, seriesId, season, episode
+                string apiUrl = string.Format("http://thetvdb.com/api/{0}/series/{1}/default/{2}/{3}",
+                    this.APIKey,
+                    seriesId,
+                    season,
+                    episode);
+
+                TVDBEpisodeResult response = GetAPIResponse<TVDBEpisodeResult>(apiUrl);
+
+                if(response != null)
                 {
-                    EpisodeNumber = response.EpisodeInfo.EpisodeNumber,
-                    EpisodeSummary = response.EpisodeInfo.EpisodeSummary,
-                    EpisodeTitle = response.EpisodeInfo.EpisodeName,
-                    OriginalAirDate = response.EpisodeInfo.OriginalAirDate,
-                    SeasonNumber = response.EpisodeInfo.SeasonNumber,
-                    ShowName = showName
-                };
+                    retval = new TVEpisodeInfo()
+                    {
+                        EpisodeNumber = response.EpisodeInfo.EpisodeNumber,
+                        EpisodeSummary = response.EpisodeInfo.EpisodeSummary,
+                        EpisodeTitle = response.EpisodeInfo.EpisodeName,
+                        OriginalAirDate = response.EpisodeInfo.OriginalAirDate,
+                        SeasonNumber = response.EpisodeInfo.SeasonNumber,
+                        ShowName = showName
+                    };
+                }
             }
 
             return retval;
