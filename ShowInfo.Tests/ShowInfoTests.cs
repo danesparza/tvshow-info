@@ -42,6 +42,23 @@ namespace ShowInfo.Tests
         }
 
         [TestMethod]
+        public void ForFullPath_WithValidAirdateFileName_ReturnsTVEpisodeInfo()
+        {
+            //  Arrange
+            ShowInformationManager showMgr = new ShowInformationManager();
+            string filename = @"C:\Users\desparza\Downloads\The.Colbert.Report.2013.10.10.Reed.Albergotti.and.Vanessa.OConnell.HDTV.x264-LMAO.mp4";
+
+            //  Act
+            TVEpisodeInfo episode = showMgr.GetEpisodeInfoForFilename(filename);
+
+            //  Assert
+            Assert.AreEqual<int>(10, episode.SeasonNumber);
+            Assert.AreEqual<int>(8, episode.EpisodeNumber);
+            Assert.AreEqual<string>("The Colbert Report", episode.ShowName);
+            Assert.AreEqual<string>("Reed Albergotti & Vanessa O'Connell", episode.EpisodeTitle);
+        }
+
+        [TestMethod]
         public void GetEpisode_WithValidSeasonEpisode_ReturnsTVEpisode()
         {
             //  Arrange

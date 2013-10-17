@@ -2,7 +2,10 @@
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Configuration;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
@@ -28,9 +31,11 @@ namespace TheTVDBShowInfo
         public TVEpisodeInfo GetShowInfo(string showName, int season, int episode)
         {
             TVEpisodeInfo retval = null;
+            Trace.TraceInformation("Getting TVDB show information for: {0} season {1}, episode {2}", showName, season, episode);
 
             //  Get API key information from application config
             APIKey = ConfigurationManager.AppSettings["TheTVDB_APIKey"];
+            Trace.TraceInformation("Using TVDB API key: {0}", this.APIKey);
 
             //  If we can't find it, throw an exception
             if(string.IsNullOrEmpty(this.APIKey))
@@ -78,9 +83,11 @@ namespace TheTVDBShowInfo
         public TVEpisodeInfo GetShowInfo(string showName, int year, int month, int day)
         {
             TVEpisodeInfo retval = null;
+            Trace.TraceInformation("Getting TVDB show information for: {0} date: {1}-{2}-{3}", showName, year, month, day);
 
             //  Get API key information from application config
             APIKey = ConfigurationManager.AppSettings["TheTVDB_APIKey"];
+            Trace.TraceInformation("Using TVDB API key: {0}", this.APIKey);
 
             //  If we can't find it, throw an exception
             if(string.IsNullOrEmpty(this.APIKey))
@@ -157,15 +164,21 @@ namespace TheTVDBShowInfo
         {
             T result = default(T);
 
+            Trace.TraceInformation("Calling TVDB api: {0}", url);
+
             try
             {
+                WebClient client = new WebClient();
+                string responseData = client.DownloadString(url);
+                Trace.TraceInformation("Serializing TVDB response: {0}", responseData);
                 XmlSerializer serializer = new XmlSerializer(typeof(T));
-                XmlReader reader = XmlReader.Create(url);
+                XmlReader reader = XmlReader.Create(new StringReader(responseData));
                 result = (T)serializer.Deserialize(reader);
                 reader.Close();
             }
             catch(Exception ex)
             {
+                Trace.TraceError("TVDB api exception: {0}", ex.Message);
                 /* Just fail silently for now and return default(T) */
             }
 

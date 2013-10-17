@@ -132,6 +132,9 @@ namespace ShowInfo
             int parsedAirdateMonth = 1;
             int parsedAirdateDay = 1;
 
+            //  Make sure we're just using a filename - not an entire path:
+            filename = Path.GetFileName(filename);
+
             /******* PARSE THE FILENAME ********/
             
             //  Season/Episode parsers
