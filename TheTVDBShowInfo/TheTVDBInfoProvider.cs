@@ -45,15 +45,15 @@ namespace TheTVDBShowInfo
             }
 
             //  Get the seriesId for the show
-            string seriesId = GetSeriesIdForShow(showName);
+            TVDBSeriesResult series = GetSeriesForShow(showName);
 
             //  If we were able to get the seriesId...
-            if(!string.IsNullOrEmpty(seriesId))
+            if(series != null && series.SeriesInfo != null && series.SeriesInfo.SeriesId != null)
             {
                 //  Get the episode information using the API key, seriesId, season, episode
                 string apiUrl = string.Format("http://thetvdb.com/api/{0}/series/{1}/default/{2}/{3}",
                     this.APIKey,
-                    seriesId,
+                    series.SeriesInfo.SeriesId,
                     season,
                     episode);
 
@@ -68,7 +68,7 @@ namespace TheTVDBShowInfo
                         EpisodeTitle = response.EpisodeInfo.EpisodeName,
                         OriginalAirDate = response.EpisodeInfo.OriginalAirDate,
                         SeasonNumber = response.EpisodeInfo.SeasonNumber,
-                        ShowName = showName
+                        ShowName = series.SeriesInfo.SeriesName
                     };
                 }
             }
@@ -97,14 +97,15 @@ namespace TheTVDBShowInfo
             }
 
             //  Get the seriesId for the show
-            string seriesId = GetSeriesIdForShow(showName);
+            TVDBSeriesResult series = GetSeriesForShow(showName);
 
-            if(!string.IsNullOrEmpty(seriesId))
+            //  If we were able to get the seriesId...
+            if(series != null && series.SeriesInfo != null && series.SeriesInfo.SeriesId != null)
             {
                 //  Get the episode information using the seriesId, airdate
                 string apiUrl = string.Format("http://thetvdb.com/api/GetEpisodeByAirDate.php?apikey={0}&seriesid={1}&airdate={2}-{3}-{4}",
                     this.APIKey,
-                    seriesId,
+                    series.SeriesInfo.SeriesId,
                     year,
                     month,
                     day);
@@ -120,7 +121,7 @@ namespace TheTVDBShowInfo
                         EpisodeTitle = response.EpisodeInfo.EpisodeName,
                         OriginalAirDate = response.EpisodeInfo.OriginalAirDate,
                         SeasonNumber = response.EpisodeInfo.SeasonNumber,
-                        ShowName = showName
+                        ShowName = series.SeriesInfo.SeriesName
                     };
                 }
             }
@@ -137,19 +138,15 @@ namespace TheTVDBShowInfo
         /// </summary>
         /// <param name="showName"></param>
         /// <returns></returns>
-        private string GetSeriesIdForShow(string showName)
+        private TVDBSeriesResult GetSeriesForShow(string showName)
         {
-            string retval = string.Empty;
+            TVDBSeriesResult retval = null;
 
             //  The formatted API url to call
             string apiUrl = string.Format("http://thetvdb.com/api/GetSeries.php?seriesname={0}&apikey={1}", showName, this.APIKey);
 
             //  Call the API
-            TVDBSeriesResult response = GetAPIResponse<TVDBSeriesResult>(apiUrl);
-
-            //  If we have valid (deserialized) data
-            if(response != null && response.SeriesInfo != null)
-                retval = response.SeriesInfo.SeriesId;
+            retval = GetAPIResponse<TVDBSeriesResult>(apiUrl);
 
             return retval;
         }

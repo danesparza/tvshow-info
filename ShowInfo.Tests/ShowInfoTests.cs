@@ -29,7 +29,7 @@ namespace ShowInfo.Tests
         {
             //  Arrange
             ShowInformationManager showMgr = new ShowInformationManager();
-            string filename = "The.Colbert.Report.2013.10.10.Reed.Albergotti.and.Vanessa.OConnell.HDTV.x264-LMAO.mp4";
+            string filename = "Colbert.Report.2013.10.10.Reed.Albergotti.and.Vanessa.OConnell.HDTV.x264-LMAO.mp4";
 
             //  Act
             TVEpisodeInfo episode = showMgr.GetEpisodeInfoForFilename(filename);
