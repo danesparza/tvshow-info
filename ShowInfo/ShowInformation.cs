@@ -92,9 +92,9 @@ namespace ShowInfo
             string retval = showName;
 
             //  If the given show has an alias, return it
-            if(this.showAliases.Where(s => s.Show == showName).Any())
+            if(this.showAliases.Where(s => s.Show.Equals(showName, StringComparison.InvariantCultureIgnoreCase)).Any())
             {
-                retval = showAliases.Where(s => s.Show == showName).Select(s => s.Alias).FirstOrDefault();
+                retval = showAliases.Where(s => s.Show.Equals(showName, StringComparison.InvariantCultureIgnoreCase)).Select(s => s.Alias).FirstOrDefault();
             }
 
             return retval;

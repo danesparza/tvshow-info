@@ -25,6 +25,23 @@ namespace ShowInfo.Tests
         }
 
         [TestMethod]
+        public void ForFilenameAlt_WithValidSEFileName_ReturnsTVEpisodeInfo()
+        {
+            //  Arrange
+            ShowInformationManager showMgr = new ShowInformationManager();
+            string filename = "once.upon.a.time.305.hdtv-lol.mp4";
+
+            //  Act
+            TVEpisodeInfo episode = showMgr.GetEpisodeInfoForFilename(filename);
+
+            //  Assert
+            Assert.AreEqual<int>(3, episode.SeasonNumber);
+            Assert.AreEqual<int>(5, episode.EpisodeNumber);
+            Assert.AreEqual<string>("Once Upon a Time (2011)", episode.ShowName);
+            Assert.AreEqual<string>("Good Form", episode.EpisodeTitle);
+        }
+
+        [TestMethod]
         public void ForFilename_WithValidAirdateFileName_ReturnsTVEpisodeInfo()
         {
             //  Arrange
