@@ -165,12 +165,16 @@ namespace TheTVDBShowInfo
 
             try
             {
-                WebClient client = new WebClient();
-                string responseData = client.DownloadString(url);
+                WebClient webClient = new WebClient();
+                webClient.Encoding = Encoding.UTF8;
+                string responseData = webClient.DownloadString(url);
+
                 Trace.TraceInformation("Serializing TVDB response: {0}", responseData);
+                
                 XmlSerializer serializer = new XmlSerializer(typeof(T));
                 XmlReader reader = XmlReader.Create(new StringReader(responseData));
                 result = (T)serializer.Deserialize(reader);
+                
                 reader.Close();
             }
             catch(Exception ex)
