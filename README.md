@@ -9,7 +9,7 @@ Quickstart to using the library in .NET
 -----------------
 
 1. Add a reference to the ShowInfo.dll library in your project or [install the NuGet package](https://www.nuget.org/packages/TV-show-info/)
-2. Make sure the provider plugin .dlls are in the same directory as your executing assembly.  TVShow-info ships with 2 providers: Rovi and TheTVDB.
+2. Make sure the provider plugin .dlls are in the same directory as your executing assembly.  TVShow-info ships with 2 providers: Rovi and TheTVDB.  REMOVE ANY PROVIDER .DLLS YOU DON'T WANT TO USE -- otherwise they will get loaded automatically using MEF.
 3. Set the appropriate configuration values for your providers (like API keys) in the app.config or web.config.
 4. Write code that uses the library:
 
