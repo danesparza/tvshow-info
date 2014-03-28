@@ -13,15 +13,15 @@ Quickstart to using the library in .NET
 3. Set the appropriate configuration values for your providers (like API keys) in the app.config or web.config.
 4. Write code that uses the library:
 
-	    //  Arrange
-	    ShowInformationManager showMgr = new ShowInformationManager();
-	    string filename = "Once.Upon.a.Time.S03E01.720p.HDTV.X264-DIMENSION.mkv";
-	    
-	    //  Act
-	    TVEpisodeInfo episode = showMgr.GetEpisodeInfoForFilename(filename);
-	    
-	    //  Assert
-	    Assert.AreEqual<int>(3, episode.SeasonNumber);
-	    Assert.AreEqual<int>(1, episode.EpisodeNumber);
-	    Assert.AreEqual<string>("Once Upon a Time (2011)", episode.ShowName); /* Changes when using an alias */
-	    Assert.AreEqual<string>("The Heart of the Truest Believer", episode.EpisodeTitle);
+```CSharp
+ShowInformationManager showMgr = new ShowInformationManager();
+string filename = "Once.Upon.a.Time.S03E01.720p.HDTV.X264-DIMENSION.mkv";
+
+TVEpisodeInfo episode = showMgr.GetEpisodeInfoForFilename(filename);
+
+//  Assert
+Assert.AreEqual<int>(3, episode.SeasonNumber);
+Assert.AreEqual<int>(1, episode.EpisodeNumber);
+Assert.AreEqual<string>("Once Upon a Time (2011)", episode.ShowName); /* Changes when using an alias */
+Assert.AreEqual<string>("The Heart of the Truest Believer", episode.EpisodeTitle);
+```
