@@ -25,6 +25,40 @@ namespace ShowInfo.Tests
         }
 
         [TestMethod]
+        public void ForFilename_PR_ReturnsTVEpisodeInfo()
+        {
+            //  Arrange
+            ShowInformationManager showMgr = new ShowInformationManager();
+            string filename = "Parks.and.Recreation.S06E05.HDTV.x264-LOL.mp4";
+
+            //  Act
+            TVEpisodeInfo episode = showMgr.GetEpisodeInfoForFilename(filename);
+
+            //  Assert
+            Assert.AreEqual<int>(6, episode.SeasonNumber);
+            Assert.AreEqual<int>(5, episode.EpisodeNumber);
+            Assert.AreEqual<string>("Parks and Recreation", episode.ShowName);
+            Assert.AreEqual<string>("Gin It Up!", episode.EpisodeTitle);
+        }
+
+        [TestMethod]
+        public void ForFilename_CollegeFootball_ReturnsTVEpisodeInfo()
+        {
+            //  Arrange
+            ShowInformationManager showMgr = new ShowInformationManager();
+            string filename = "Purdue Boilermakers - Ohio State Buckeyes 02.11.13.mkv";
+
+            //  Act
+            TVEpisodeInfo episode = showMgr.GetEpisodeInfoForFilename(filename);
+
+            //  Assert
+            Assert.AreEqual<int>(6, episode.SeasonNumber);
+            Assert.AreEqual<int>(5, episode.EpisodeNumber);
+            Assert.AreEqual<string>("Parks and Recreation", episode.ShowName);
+            Assert.AreEqual<string>("Gin It Up!", episode.EpisodeTitle);
+        }
+
+        [TestMethod]
         public void ForFilenameAlt_WithValidSEFileName_ReturnsTVEpisodeInfo()
         {
             //  Arrange
@@ -121,6 +155,19 @@ namespace ShowInfo.Tests
             Assert.AreEqual<int>(2, episode.EpisodeNumber);
             Assert.AreEqual<string>("Once Upon a Time (2011)", episode.ShowName); /* Notice this changes */
             Assert.AreEqual<string>("Lost Girl", episode.EpisodeTitle);
+        }
+
+        [TestMethod]
+        public void GetAllEpisodes_WithValidShowSeason_ReturnsAllEpisodes()
+        {
+            //  Arrange
+            ShowInformationManager showMgr = new ShowInformationManager();
+
+            //  Act
+            TVEpisodeInfo episode = showMgr.GetEpisodeInfo("Once Upon a Time", 3, 2);
+
+            //  Assert
+            
         }
     }
 }

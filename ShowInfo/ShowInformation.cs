@@ -175,6 +175,11 @@ namespace ShowInfo
                 parsedSeasonNumber = Convert.ToInt32(seMatch2.Groups["season_num"].Value);
                 parsedEpisodeNumber = Convert.ToInt32(seMatch2.Groups["ep_num"].Value);
             }
+            //  Try to match a sports team
+            else if()
+            {
+                
+            }
 
             //  Resolve the show alias (if it exists)
             parsedShowName = ResolveShowToAlias(parsedShowName);
@@ -266,6 +271,8 @@ namespace ShowInfo
 
             return retval;
         }
+
+
     }
 
     /// <summary>
