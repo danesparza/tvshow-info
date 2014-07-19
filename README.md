@@ -7,13 +7,41 @@ Uses a [MEF](http://msdn.microsoft.com/en-us/library/dd460648.aspx)-based provid
 
 [![Build status](https://ci.appveyor.com/api/projects/status/b778xp0kh3gr6vr7)](https://ci.appveyor.com/project/danesparza/tvshow-info)
 
-Quickstart to using the library in .NET
------------------
+### Quick Start
 
-1. Add a reference to the ShowInfo.dll library in your project or [install the NuGet package](https://www.nuget.org/packages/TV-show-info/)
-2. Make sure the provider plugin .dlls are in the same directory as your executing assembly.  TVShow-info ships with 2 providers: Rovi and TheTVDB.  REMOVE ANY PROVIDER .DLLS YOU DON'T WANT TO USE -- otherwise they will get loaded automatically using MEF.
-3. Set the appropriate configuration values for your providers (like API keys) in the app.config or web.config.
-4. Write code that uses the library:
+Install the [NuGet package](https://www.nuget.org/packages/TV-show-info/) from the package manager console:
+```powershell
+Install-Package TV-show-info
+```
+
+Make sure the provider plugin .dlls are in the same directory as your executing assembly.  TVShow-info ships with 2 providers: Rovi and TheTVDB.  REMOVE ANY PROVIDER .DLLS YOU DON'T WANT TO USE -- otherwise they will get loaded automatically using MEF.
+
+Set the appropriate configuration values for your providers (like API keys) in the app.config or web.config.
+- For TheTVDB:
+
+```xml
+<appSettings>
+    <!-- You can leave this blank if all data provider .dlls reside in your application directory -->
+    <add key="PluginDirectory" value=""/>
+
+    <!-- TheTVDB API information -->
+    <add key="TheTVDB_APIKey" value="YOUR_API_KEY"/>
+</appSettings>
+```        
+- For Rovi
+```xml
+<appSettings>
+    <!-- You can leave this blank if all data provider .dlls reside in your application directory -->
+    <add key="PluginDirectory" value=""/>
+      
+    <!-- Rovi API information -->
+    <add key="Rovi_APIKey" value="YOUR_API_KEY"/>
+    <add key="Rovi_APISecret" value="YOUR_API_SECRET"/>
+</appSettings>
+```
+
+Examples
+-----------------
 
 ```CSharp
 ShowInformationManager showMgr = new ShowInformationManager();
