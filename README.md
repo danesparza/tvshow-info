@@ -40,8 +40,7 @@ Set the appropriate configuration values for your providers (like API keys) in t
 </appSettings>
 ```
 
-Examples
------------------
+### Examples
 
 ```CSharp
 ShowInformationManager showMgr = new ShowInformationManager();
