@@ -29,6 +29,51 @@ namespace RoviShowInfo
         /// </summary>
         private string APISecret = string.Empty;
 
+        #region API tools
+
+        /// <summary>
+        /// Create an MD5 hash for our api call
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        private string CreateMD5Hash(string input)
+        {
+            // Use input string to calculate MD5 hash
+            MD5 md5 = MD5.Create();
+            byte[] inputBytes = System.Text.Encoding.ASCII.GetBytes(input);
+            byte[] hashBytes = md5.ComputeHash(inputBytes);
+
+            // Convert the byte array to hexadecimal string
+            StringBuilder sb = new StringBuilder();
+            for(int i = 0; i < hashBytes.Length; i++)
+            {
+                //this will use lowercase letters, use "X2" instead of "x2" to get uppercase
+                sb.Append(hashBytes[i].ToString("x2"));
+            }
+
+            return sb.ToString();
+        }
+
+        /// <summary>
+        /// Get a signature
+        /// </summary>
+        /// <returns></returns>
+        private string GetSig()
+        {
+            //get the timestamp value
+            string timestamp = (DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0)).TotalSeconds.ToString();
+
+            //grab just the integer portion
+            timestamp = timestamp.Substring(0, timestamp.IndexOf("."));
+
+            //call the function to create the hash
+            return CreateMD5Hash(APIKey + APISecret + timestamp);
+        }
+
+        #endregion
+
+        #region ISeasonEpisodeShowInfoProvider Members
+
         public TVEpisodeInfo GetShowInfo(string showName, int season, int episode)
         {
             TVEpisodeInfo retval = null;
@@ -86,45 +131,9 @@ namespace RoviShowInfo
             return retval;
         }
 
-        #region API tools
-
-        /// <summary>
-        /// Create an MD5 hash for our api call
-        /// </summary>
-        /// <param name="input"></param>
-        /// <returns></returns>
-        private string CreateMD5Hash(string input)
+        public IEnumerable<TVEpisodeInfo> GetAllEpisodesForShow(string showname)
         {
-            // Use input string to calculate MD5 hash
-            MD5 md5 = MD5.Create();
-            byte[] inputBytes = System.Text.Encoding.ASCII.GetBytes(input);
-            byte[] hashBytes = md5.ComputeHash(inputBytes);
-
-            // Convert the byte array to hexadecimal string
-            StringBuilder sb = new StringBuilder();
-            for(int i = 0; i < hashBytes.Length; i++)
-            {
-                //this will use lowercase letters, use "X2" instead of "x2" to get uppercase
-                sb.Append(hashBytes[i].ToString("x2"));
-            }
-
-            return sb.ToString();
-        }
-
-        /// <summary>
-        /// Get a signature
-        /// </summary>
-        /// <returns></returns>
-        private string GetSig()
-        {
-            //get the timestamp value
-            string timestamp = (DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0)).TotalSeconds.ToString();
-
-            //grab just the integer portion
-            timestamp = timestamp.Substring(0, timestamp.IndexOf("."));
-
-            //call the function to create the hash
-            return CreateMD5Hash(APIKey + APISecret + timestamp);
+            throw new NotImplementedException();
         }
 
         #endregion

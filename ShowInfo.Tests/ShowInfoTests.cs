@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ShowInfoProvider;
 
@@ -164,7 +166,7 @@ namespace ShowInfo.Tests
             ShowInformationManager showMgr = new ShowInformationManager();
 
             //  Act
-            TVEpisodeInfo episode = showMgr.GetEpisodeInfo("Once Upon a Time", 3, 2);
+            List<TVEpisodeInfo> episodes = showMgr.GetAllEpisodes("Once Upon a Time").ToList();
 
             //  Assert
             

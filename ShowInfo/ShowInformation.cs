@@ -114,6 +114,8 @@ namespace ShowInfo
             Compose();
         }
 
+        #region API methods
+
         /// <summary>
         /// Gets show information for the given filename
         /// </summary>
@@ -123,11 +125,11 @@ namespace ShowInfo
         {
             //  Create our new episode information:
             TVEpisodeInfo retval = null;
-            
+
             string parsedShowName = string.Empty;
             int parsedSeasonNumber = 0;
             int parsedEpisodeNumber = 0;
-            
+
             int parsedAirdateYear = 0;
             int parsedAirdateMonth = 1;
             int parsedAirdateDay = 1;
@@ -136,7 +138,7 @@ namespace ShowInfo
             filename = Path.GetFileName(filename);
 
             /******* PARSE THE FILENAME ********/
-            
+
             //  Season/Episode parsers
             Regex rxSE = new Regex(@"^((?<series_name>.+?)[. _-]+)?s(?<season_num>\d+)[. _-]*e(?<ep_num>\d+)(([. _-]*e|-)(?<extra_ep_num>(?!(1080|720)[pi])\d+))*[. _-]*((?<extra_info>.+?)((?<![. _-])-(?<release_group>[^-]+))?)?$", RegexOptions.IgnoreCase);
             Regex rxSE2 = new Regex(@"(?<series_name>.*?)\.S?(?<season_num>\d{1,2})[Ex-]?(?<ep_num>\d{2})\.(.*)", RegexOptions.IgnoreCase);
@@ -267,6 +269,32 @@ namespace ShowInfo
 
             return retval;
         }
+
+        /// <summary>
+        /// Gets all episodes for a given show
+        /// </summary>
+        /// <param name="showName">The TV show name to get information for</param>
+        /// <returns></returns>
+        public IEnumerable<TVEpisodeInfo> GetAllEpisodes(string showName)
+        {
+            List<TVEpisodeInfo> episodes = new List<TVEpisodeInfo>();
+
+            //  Resolve the show alias (if it exists)
+            showName = ResolveShowToAlias(showName);
+
+            foreach(var provider in SEShowInfoProviders)
+            {
+                episodes = provider.GetAllEpisodesForShow(showName).ToList();
+
+                //  If we found our information, get out
+                if(episodes.Any())
+                    break;
+            }
+
+            return episodes;
+        }
+
+        #endregion
 
 
     }

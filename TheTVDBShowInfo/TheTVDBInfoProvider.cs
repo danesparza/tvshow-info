@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Configuration;
 using System.IO;
+using System.IO.Compression;
 using System.Net;
+using System.Reflection;
 using System.Text;
 using System.Xml;
+using System.Xml.Linq;
 using System.Xml.Serialization;
 using NLog;
 using ShowInfoProvider;
@@ -26,6 +29,17 @@ namespace TheTVDBShowInfo
 
         private string APIKey = string.Empty;
         private string language = string.Empty;
+        private string cacheDirectory = string.Empty;
+
+        /// <summary>
+        /// Default constructor
+        /// </summary>
+        public TheTVDBInfoProvider()
+        {
+            //  Get API key information from application config
+            APIKey = ConfigurationManager.AppSettings["TheTVDB_APIKey"] ?? "";
+            logger.Debug("Using TVDB API key: {0}", this.APIKey);
+        }
 
         #region ISeasonEpisodeShowInfoProvider Members
 
@@ -33,10 +47,6 @@ namespace TheTVDBShowInfo
         {
             TVEpisodeInfo retval = null;
             logger.Debug("Getting TVDB show information for: {0} season {1}, episode {2}", showName, season, episode);
-
-            //  Get API key information from application config
-            APIKey = ConfigurationManager.AppSettings["TheTVDB_APIKey"];
-            logger.Debug("Using TVDB API key: {0}", this.APIKey);
 
             //  If we can't find it, throw an exception
             if(string.IsNullOrEmpty(this.APIKey))
@@ -77,6 +87,20 @@ namespace TheTVDBShowInfo
             return retval;
         }
 
+        public IEnumerable<TVEpisodeInfo> GetAllEpisodesForShow(string showname)
+        {
+            List<TVEpisodeInfo> retval = new List<TVEpisodeInfo>();
+
+            //  Get the show information
+            var series = GetSeriesForShow(showname);
+
+            //  Get all episodes for the show:
+            if(series != null)
+                retval = GetEpisodesForSeries(series.SeriesInfo, false);
+
+            return retval;
+        }
+
         #endregion
 
         #region IAirdateShowInfoProvider Members
@@ -85,10 +109,6 @@ namespace TheTVDBShowInfo
         {
             TVEpisodeInfo retval = null;
             logger.Debug("Getting TVDB show information for: {0} date: {1}-{2}-{3}", showName, year, month, day);
-
-            //  Get API key information from application config
-            APIKey = ConfigurationManager.AppSettings["TheTVDB_APIKey"];
-            logger.Debug("Using TVDB API key: {0}", this.APIKey);
 
             //  If we can't find it, throw an exception
             if(string.IsNullOrEmpty(this.APIKey))
@@ -158,18 +178,55 @@ namespace TheTVDBShowInfo
         /// <param name="series">The series information to get episodes for</param>
         /// <param name="forceFetch">Ignore the current cache - just refetch and recache</param>
         /// <returns></returns>
-        private List<TVEpisodeInfo> GetEpisodesForSeries(TVDBSeriesResult series, bool forceFetch)
+        private List<TVEpisodeInfo> GetEpisodesForSeries(TVDBSeriesInfo series, bool forceFetch)
         {
+            List<TVEpisodeInfo> retval = new List<TVEpisodeInfo>();
+
             //  Get the language from the configuration file
             language = ConfigurationManager.AppSettings["TheTVDB_Language"] ?? "en";
 
-            List<TVEpisodeInfo> retval = new List<TVEpisodeInfo>();
+            //  Construct the cache path
+            string currentPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            cacheDirectory = ConfigurationManager.AppSettings["TheTVDB_CacheDir"] ?? "cache";
+            cacheDirectory = Path.Combine(currentPath, cacheDirectory, series.SeriesId);
+            
+            //  Construct the cache filename
+            string cacheFile = cacheDirectory + Path.DirectorySeparatorChar + "episodes.zip";
 
             //  Check to see if we have cached results for the series
+            if(!Directory.Exists(cacheDirectory) || forceFetch)
+            {
+                //  If the directory doesn't exist, create it:
+                if(!Directory.Exists(cacheDirectory))
+                    Directory.CreateDirectory(cacheDirectory);
 
-            //  If we don't (or if we should refetch anyway) get the results and cache
+                //  Get the latest episode zip and save it to the cache path
+                GetEpisodeList(series, language, cacheFile);
+            }
 
-            //  Return the cached episode list
+            //  If the file exists...
+            if(File.Exists(cacheFile))
+            {
+                XDocument doc = new XDocument();
+
+                //  Open it as a zipfile:
+                using (ZipArchive zip = ZipFile.Open(cacheFile, ZipArchiveMode.Read))
+                {
+                    foreach (ZipArchiveEntry entry in zip.Entries)
+                    {
+                        if(entry.Name == "en.xml")
+                        {
+                            //  Attempt to create an XDocument from it
+                            doc = XDocument.Load(entry.Open());
+
+                            break;
+                        }
+                    }
+                }
+
+                //  Using the XDocument return a list of TVEpisodeInfo's
+                
+            }
 
             return retval;
         }
@@ -208,7 +265,37 @@ namespace TheTVDBShowInfo
             }
 
             return result;
-        } 
+        }
+
+        /// <summary>
+        /// For a given series and language, download the zip file containing all episode information
+        /// to the specified file
+        /// </summary>
+        /// <param name="series"></param>
+        /// <param name="language"></param>
+        /// <param name="cacheFile">The file to use to cache the episode information</param>
+        /// <returns></returns>
+        private void GetEpisodeList(TVDBSeriesInfo series, string language, string cacheFile)
+        {
+            //  Construct the url path
+            string url = string.Format("http://thetvdb.com/api/{0}/series/{1}/all/{2}.zip",
+                this.APIKey,
+                series.SeriesId,
+                language
+            );
+
+            //  Attempt to download the file:
+            try 
+	        {
+                WebClient webClient = new WebClient();
+                webClient.Encoding = Encoding.UTF8;
+                webClient.DownloadFile(url, cacheFile);
+	        }
+	        catch (Exception ex)
+	        {
+                logger.ErrorException("There was a problem downloading the list of episodes", ex);
+	        }
+        }
 
         #endregion
     }
