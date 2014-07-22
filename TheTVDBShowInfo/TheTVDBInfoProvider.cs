@@ -11,6 +11,7 @@ using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Serialization;
 using NLog;
+using System.Linq;
 using ShowInfoProvider;
 
 namespace TheTVDBShowInfo
@@ -96,7 +97,7 @@ namespace TheTVDBShowInfo
 
             //  Get all episodes for the show:
             if(series != null)
-                retval = GetEpisodesForSeries(series.SeriesInfo, false);
+                retval = GetEpisodesForSeries(series.SeriesInfo);
 
             return retval;
         }
@@ -176,9 +177,8 @@ namespace TheTVDBShowInfo
         /// Gets the list of episodes for a given series
         /// </summary>
         /// <param name="series">The series information to get episodes for</param>
-        /// <param name="forceFetch">Ignore the current cache - just refetch and recache</param>
         /// <returns></returns>
-        private List<TVEpisodeInfo> GetEpisodesForSeries(TVDBSeriesInfo series, bool forceFetch)
+        private List<TVEpisodeInfo> GetEpisodesForSeries(TVDBSeriesInfo series)
         {
             List<TVEpisodeInfo> retval = new List<TVEpisodeInfo>();
 
@@ -193,18 +193,22 @@ namespace TheTVDBShowInfo
             //  Construct the cache filename
             string cacheFile = cacheDirectory + Path.DirectorySeparatorChar + "episodes.zip";
 
-            //  Check to see if we have cached results for the series
-            if(!Directory.Exists(cacheDirectory) || forceFetch)
+            //  Make sure the cache file exists:
+            if(!Directory.Exists(cacheDirectory))
             {
                 //  If the directory doesn't exist, create it:
                 if(!Directory.Exists(cacheDirectory))
                     Directory.CreateDirectory(cacheDirectory);
-
-                //  Get the latest episode zip and save it to the cache path
-                GetEpisodeList(series, language, cacheFile);
             }
 
-            //  If the file exists...
+            //  Check to see if we have cached results for the series
+            if(!File.Exists(cacheFile))
+            {
+                //  Get the latest episode zip and save it to the cache path
+                GetEpisodeBundle(series, language, cacheFile);
+            }
+
+            //  If the cache file exists...
             if(File.Exists(cacheFile))
             {
                 XDocument doc = new XDocument();
@@ -214,7 +218,7 @@ namespace TheTVDBShowInfo
                 {
                     foreach (ZipArchiveEntry entry in zip.Entries)
                     {
-                        if(entry.Name == "en.xml")
+                        if(entry.Name == language + ".xml")
                         {
                             //  Attempt to create an XDocument from it
                             doc = XDocument.Load(entry.Open());
@@ -225,7 +229,16 @@ namespace TheTVDBShowInfo
                 }
 
                 //  Using the XDocument return a list of TVEpisodeInfo's
-                
+                retval = (from item in doc.Descendants("Episode")
+                          select new TVEpisodeInfo()
+                          {
+                              EpisodeTitle = item.Element("EpisodeName").Value,
+                              EpisodeSummary = item.Element("Overview").Value,
+                              EpisodeNumber = Convert.ToInt32(item.Element("EpisodeNumber").Value),
+                              OriginalAirDate = DateTime.Parse(item.Element("FirstAired").Value),
+                              SeasonNumber = Convert.ToInt32(item.Element("SeasonNumber").Value),
+                              ShowName = series.SeriesName
+                          }).ToList();
             }
 
             return retval;
@@ -275,7 +288,7 @@ namespace TheTVDBShowInfo
         /// <param name="language"></param>
         /// <param name="cacheFile">The file to use to cache the episode information</param>
         /// <returns></returns>
-        private void GetEpisodeList(TVDBSeriesInfo series, string language, string cacheFile)
+        private void GetEpisodeBundle(TVDBSeriesInfo series, string language, string cacheFile)
         {
             //  Construct the url path
             string url = string.Format("http://thetvdb.com/api/{0}/series/{1}/all/{2}.zip",
