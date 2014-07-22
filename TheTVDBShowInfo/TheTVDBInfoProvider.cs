@@ -2,14 +2,12 @@
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Configuration;
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Serialization;
+using NLog;
 using ShowInfoProvider;
 
 namespace TheTVDBShowInfo
@@ -24,18 +22,21 @@ namespace TheTVDBShowInfo
     [Export(typeof(IAirdateShowInfoProvider))]
     public class TheTVDBInfoProvider : ISeasonEpisodeShowInfoProvider, IAirdateShowInfoProvider
     {
+        private static Logger logger = LogManager.GetCurrentClassLogger();
+
         private string APIKey = string.Empty;
+        private string language = string.Empty;
 
         #region ISeasonEpisodeShowInfoProvider Members
 
         public TVEpisodeInfo GetShowInfo(string showName, int season, int episode)
         {
             TVEpisodeInfo retval = null;
-            Trace.TraceInformation("Getting TVDB show information for: {0} season {1}, episode {2}", showName, season, episode);
+            logger.Debug("Getting TVDB show information for: {0} season {1}, episode {2}", showName, season, episode);
 
             //  Get API key information from application config
             APIKey = ConfigurationManager.AppSettings["TheTVDB_APIKey"];
-            Trace.TraceInformation("Using TVDB API key: {0}", this.APIKey);
+            logger.Debug("Using TVDB API key: {0}", this.APIKey);
 
             //  If we can't find it, throw an exception
             if(string.IsNullOrEmpty(this.APIKey))
@@ -83,11 +84,11 @@ namespace TheTVDBShowInfo
         public TVEpisodeInfo GetShowInfo(string showName, int year, int month, int day)
         {
             TVEpisodeInfo retval = null;
-            Trace.TraceInformation("Getting TVDB show information for: {0} date: {1}-{2}-{3}", showName, year, month, day);
+            logger.Debug("Getting TVDB show information for: {0} date: {1}-{2}-{3}", showName, year, month, day);
 
             //  Get API key information from application config
             APIKey = ConfigurationManager.AppSettings["TheTVDB_APIKey"];
-            Trace.TraceInformation("Using TVDB API key: {0}", this.APIKey);
+            logger.Debug("Using TVDB API key: {0}", this.APIKey);
 
             //  If we can't find it, throw an exception
             if(string.IsNullOrEmpty(this.APIKey))
@@ -152,6 +153,29 @@ namespace TheTVDBShowInfo
         }
 
         /// <summary>
+        /// Gets the list of episodes for a given series
+        /// </summary>
+        /// <param name="series">The series information to get episodes for</param>
+        /// <param name="forceFetch">Ignore the current cache - just refetch and recache</param>
+        /// <returns></returns>
+        private List<TVEpisodeInfo> GetEpisodesForSeries(TVDBSeriesResult series, bool forceFetch)
+        {
+            //  Get the language from the configuration file
+            language = ConfigurationManager.AppSettings["TheTVDB_Language"] ?? "en";
+
+            List<TVEpisodeInfo> retval = new List<TVEpisodeInfo>();
+
+            //  Check to see if we have cached results for the series
+
+            //  If we don't (or if we should refetch anyway) get the results and cache
+
+            //  Return the cached episode list
+
+            return retval;
+        }
+
+
+        /// <summary>
         /// For a given API url, get the response and deserialize to the specified type
         /// </summary>
         /// <typeparam name="T"></typeparam>
@@ -161,7 +185,7 @@ namespace TheTVDBShowInfo
         {
             T result = default(T);
 
-            Trace.TraceInformation("Calling TVDB api: {0}", url);
+            logger.Debug("Calling TVDB api: {0}", url);
 
             try
             {
@@ -169,7 +193,7 @@ namespace TheTVDBShowInfo
                 webClient.Encoding = Encoding.UTF8;
                 string responseData = webClient.DownloadString(url);
 
-                Trace.TraceInformation("Serializing TVDB response: {0}", responseData);
+                logger.Debug("Serializing TVDB response: {0}", responseData);
                 
                 XmlSerializer serializer = new XmlSerializer(typeof(T));
                 XmlReader reader = XmlReader.Create(new StringReader(responseData));
@@ -179,7 +203,7 @@ namespace TheTVDBShowInfo
             }
             catch(Exception ex)
             {
-                Trace.TraceError("TVDB api exception: {0}", ex.Message);
+                logger.ErrorException("There was a problem using the TVDB api", ex);
                 /* Just fail silently for now and return default(T) */
             }
 
