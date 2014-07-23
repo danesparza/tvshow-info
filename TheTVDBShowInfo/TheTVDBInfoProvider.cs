@@ -88,16 +88,92 @@ namespace TheTVDBShowInfo
             return retval;
         }
 
-        public IEnumerable<TVEpisodeInfo> GetAllEpisodesForShow(string showname)
+        /// <summary>
+        /// Gets all show information, including all episodes for a show
+        /// </summary>
+        /// <param name="showname"></param>
+        /// <returns></returns>
+        public TVSeriesInfo GetSeriesInfo(string showname)
         {
-            List<TVEpisodeInfo> retval = new List<TVEpisodeInfo>();
+            TVSeriesInfo retval = new TVSeriesInfo();
 
             //  Get the show information
-            var series = GetSeriesForShow(showname);
+            TVDBSeriesResult seriesResult = GetSeriesForShow(showname);
+            TVDBSeriesInfo series = null;
+
+            if(seriesResult != null)
+                series = seriesResult.SeriesInfo;
 
             //  Get all episodes for the show:
             if(series != null)
-                retval = GetEpisodesForSeries(series.SeriesInfo);
+            {
+                //  Set basic show information:
+                retval.Name = series.SeriesName;
+
+                //  Get the language from the configuration file
+                language = ConfigurationManager.AppSettings["TheTVDB_Language"] ?? "en";
+
+                //  Construct the cache path
+                string currentPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+                cacheDirectory = ConfigurationManager.AppSettings["TheTVDB_CacheDir"] ?? "cache";
+                cacheDirectory = Path.Combine(currentPath, cacheDirectory, series.SeriesId);
+
+                //  Construct the cache filename
+                string cacheFile = cacheDirectory + Path.DirectorySeparatorChar + "episodes.zip";
+
+                //  Make sure the cache file exists:
+                if(!Directory.Exists(cacheDirectory))
+                {
+                    //  If the directory doesn't exist, create it:
+                    if(!Directory.Exists(cacheDirectory))
+                        Directory.CreateDirectory(cacheDirectory);
+                }
+
+                //  Check to see if we have cached results for the series
+                if(!File.Exists(cacheFile))
+                {
+                    //  Get the latest episode zip and save it to the cache path
+                    GetEpisodeBundle(series, language, cacheFile);
+                }
+
+                //  If the cache file exists...
+                if(File.Exists(cacheFile))
+                {
+                    XDocument doc = new XDocument();
+
+                    //  Open it as a zipfile:
+                    using(ZipArchive zip = ZipFile.Open(cacheFile, ZipArchiveMode.Read))
+                    {
+                        foreach(ZipArchiveEntry entry in zip.Entries)
+                        {
+                            if(entry.Name == language + ".xml")
+                            {
+                                //  Attempt to create an XDocument from it
+                                doc = XDocument.Load(entry.Open());
+
+                                break;
+                            }
+                        }
+                    }
+
+                    //  Using the XDocument return a list of TVEpisodeInfo's
+                    var episodes = from item in doc.Descendants("Episode")
+                                   select new TVEpisodeInfo()
+                                   {
+                                       EpisodeTitle = item.Element("EpisodeName").Value,
+                                       EpisodeSummary = item.Element("Overview").Value,
+                                       EpisodeNumber = Convert.ToInt32(item.Element("EpisodeNumber").Value),
+                                       OriginalAirDate = DateTime.Parse(item.Element("FirstAired").Value),
+                                       SeasonNumber = Convert.ToInt32(item.Element("SeasonNumber").Value),
+                                       ShowName = series.SeriesName
+                                   };
+
+                    retval.Seasons = from episode in episodes
+                                  group episode by episode.SeasonNumber into seasonGroup
+                                  orderby seasonGroup.Key
+                                  select seasonGroup;
+                }
+            }
 
             return retval;
         }
@@ -172,78 +248,6 @@ namespace TheTVDBShowInfo
 
             return retval;
         }
-
-        /// <summary>
-        /// Gets the list of episodes for a given series
-        /// </summary>
-        /// <param name="series">The series information to get episodes for</param>
-        /// <returns></returns>
-        private List<TVEpisodeInfo> GetEpisodesForSeries(TVDBSeriesInfo series)
-        {
-            List<TVEpisodeInfo> retval = new List<TVEpisodeInfo>();
-
-            //  Get the language from the configuration file
-            language = ConfigurationManager.AppSettings["TheTVDB_Language"] ?? "en";
-
-            //  Construct the cache path
-            string currentPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            cacheDirectory = ConfigurationManager.AppSettings["TheTVDB_CacheDir"] ?? "cache";
-            cacheDirectory = Path.Combine(currentPath, cacheDirectory, series.SeriesId);
-            
-            //  Construct the cache filename
-            string cacheFile = cacheDirectory + Path.DirectorySeparatorChar + "episodes.zip";
-
-            //  Make sure the cache file exists:
-            if(!Directory.Exists(cacheDirectory))
-            {
-                //  If the directory doesn't exist, create it:
-                if(!Directory.Exists(cacheDirectory))
-                    Directory.CreateDirectory(cacheDirectory);
-            }
-
-            //  Check to see if we have cached results for the series
-            if(!File.Exists(cacheFile))
-            {
-                //  Get the latest episode zip and save it to the cache path
-                GetEpisodeBundle(series, language, cacheFile);
-            }
-
-            //  If the cache file exists...
-            if(File.Exists(cacheFile))
-            {
-                XDocument doc = new XDocument();
-
-                //  Open it as a zipfile:
-                using (ZipArchive zip = ZipFile.Open(cacheFile, ZipArchiveMode.Read))
-                {
-                    foreach (ZipArchiveEntry entry in zip.Entries)
-                    {
-                        if(entry.Name == language + ".xml")
-                        {
-                            //  Attempt to create an XDocument from it
-                            doc = XDocument.Load(entry.Open());
-
-                            break;
-                        }
-                    }
-                }
-
-                //  Using the XDocument return a list of TVEpisodeInfo's
-                retval = (from item in doc.Descendants("Episode")
-                          select new TVEpisodeInfo()
-                          {
-                              EpisodeTitle = item.Element("EpisodeName").Value,
-                              EpisodeSummary = item.Element("Overview").Value,
-                              EpisodeNumber = Convert.ToInt32(item.Element("EpisodeNumber").Value),
-                              OriginalAirDate = DateTime.Parse(item.Element("FirstAired").Value),
-                              SeasonNumber = Convert.ToInt32(item.Element("SeasonNumber").Value),
-                              ShowName = series.SeriesName
-                          }).ToList();
-            }
-
-            return retval;
-        }
-
 
         /// <summary>
         /// For a given API url, get the response and deserialize to the specified type

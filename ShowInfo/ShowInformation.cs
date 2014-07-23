@@ -275,23 +275,23 @@ namespace ShowInfo
         /// </summary>
         /// <param name="showName">The TV show name to get information for</param>
         /// <returns></returns>
-        public IEnumerable<TVEpisodeInfo> GetAllEpisodes(string showName)
+        public TVSeriesInfo GetSeriesInfo(string showName)
         {
-            List<TVEpisodeInfo> episodes = new List<TVEpisodeInfo>();
+            TVSeriesInfo seriesInfo = null;
 
             //  Resolve the show alias (if it exists)
             showName = ResolveShowToAlias(showName);
 
             foreach(var provider in SEShowInfoProviders)
             {
-                episodes = provider.GetAllEpisodesForShow(showName).ToList();
+                seriesInfo = provider.GetSeriesInfo(showName);
 
                 //  If we found our information, get out
-                if(episodes.Any())
+                if(seriesInfo != null)
                     break;
             }
 
-            return episodes;
+            return seriesInfo;
         }
 
         #endregion

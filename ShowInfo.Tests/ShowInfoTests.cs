@@ -3,6 +3,7 @@ using System.Linq;
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ShowInfoProvider;
+using System.Diagnostics;
 
 namespace ShowInfo.Tests
 {
@@ -166,10 +167,18 @@ namespace ShowInfo.Tests
             ShowInformationManager showMgr = new ShowInformationManager();
 
             //  Act
-            List<TVEpisodeInfo> episodes = showMgr.GetAllEpisodes("Once Upon a Time").ToList();
+            TVSeriesInfo seriesInfo = showMgr.GetSeriesInfo("Once Upon a Time");
 
             //  Assert
-            
+            foreach(var seasonGroup in seriesInfo.Seasons)
+            {
+                Debug.WriteLine("Season number: {0}", seasonGroup.Key);
+
+                foreach(TVEpisodeInfo episode in seasonGroup)
+                {
+                    Debug.WriteLine("Ep {0}: {1}", episode.EpisodeNumber, episode.EpisodeTitle);    
+                }
+            }
         }
     }
 }

@@ -9,6 +9,6 @@ namespace ShowInfoProvider
     public interface ISeasonEpisodeShowInfoProvider
     {
         TVEpisodeInfo GetShowInfo(string showName, int season, int episode);
-        IEnumerable<TVEpisodeInfo> GetAllEpisodesForShow(string showname);
+        TVSeriesInfo GetSeriesInfo(string showname);
     }
 }

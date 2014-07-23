@@ -131,7 +131,7 @@ namespace RoviShowInfo
             return retval;
         }
 
-        public IEnumerable<TVEpisodeInfo> GetAllEpisodesForShow(string showname)
+        public TVSeriesInfo GetSeriesInfo(string showname)
         {
             throw new NotImplementedException();
         }
