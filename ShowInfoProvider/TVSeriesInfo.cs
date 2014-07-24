@@ -9,6 +9,7 @@ namespace ShowInfoProvider
     public class TVSeriesInfo
     {
         public string Name { get; set; }
+        public string Overview { get; set; }
         public IEnumerable<IGrouping<int, TVEpisodeInfo>> Seasons { get; set; }
     }
 }

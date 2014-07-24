@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 2013
+VisualStudioVersion = 12.0.30110.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShowInfo", "ShowInfo\ShowInfo.csproj", "{44FC61F4-5E7F-484E-84FA-84C2931FFF57}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShowInfoProvider", "ShowInfoProvider\ShowInfoProvider.csproj", "{9F4E4955-1EC1-49F7-AF33-E0A03BF140BC}"
@@ -19,6 +21,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{9B89A5
 		.nuget\NuGet.exe = .nuget\NuGet.exe
 		.nuget\NuGet.targets = .nuget\NuGet.targets
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "iTunesInfo", "iTunesInfo\iTunesInfo.csproj", "{E56109A4-D9DC-4386-8DC4-8CCEFD17BC4D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -46,6 +50,10 @@ Global
 		{C3570356-576C-41C1-B0C5-F5454A5EE513}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C3570356-576C-41C1-B0C5-F5454A5EE513}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C3570356-576C-41C1-B0C5-F5454A5EE513}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E56109A4-D9DC-4386-8DC4-8CCEFD17BC4D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E56109A4-D9DC-4386-8DC4-8CCEFD17BC4D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E56109A4-D9DC-4386-8DC4-8CCEFD17BC4D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E56109A4-D9DC-4386-8DC4-8CCEFD17BC4D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
