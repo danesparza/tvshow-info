@@ -54,12 +54,6 @@
     <Compile Include="RoviVideoSynopsis.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ShowInfoProvider\ShowInfoProvider.csproj">
-      <Project>{9f4e4955-1ec1-49f7-af33-e0a03bf140bc}</Project>
-      <Name>ShowInfoProvider</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
