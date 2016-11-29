@@ -1,0 +1,23 @@
+{
+	"version": "1.0.0-*",
+
+	"dependencies": {
+		"Microsoft.Composition": "1.0.30",
+		"runtime.any.System.Private.DataContractSerialization": "4.1.0",
+		"ServiceStack.Text": "4.5.4",
+		"ShowInfoProvider": "1.0.0-*",
+		"System.Runtime.Loader": "4.0.0"
+	},
+
+	"frameworks": {
+		"netcoreapp1.0": {
+			"imports": [
+				"netcore50",
+				"portable-net45+win8"
+			]
+		}
+	},
+	"scripts": {
+		"postcompile": [ "dotnet pack --no-build --configuration %compile:Configuration%" ]
+	}
+}
