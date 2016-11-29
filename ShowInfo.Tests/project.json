@@ -3,8 +3,8 @@
 	"testRunner": "mstest",
 	"dependencies": {
 		"moq.netcore": "4.4.0-beta8",
-		"MSTest.TestFramework": "1.0.4-preview",
-		"NETStandard.Library": "1.6.0",
+		"MSTest.TestFramework": "1.0.5-preview",
+		"NETStandard.Library": "1.6",
 		"ShowInfo": "1.0.0-*",
 		"ShowInfoProvider": "1.0.0-*",
 		"TheTVDBShowInfo": "1.0.0-*"
@@ -18,7 +18,7 @@
 			],
 			"dependencies": {
 				"Microsoft.NETCore.App": {
-					"version": "1.0.0",
+					"version": "1.0.1",
 					"type": "platform"
 				},
 				"dotnet-test-mstest": "1.1.1-preview"

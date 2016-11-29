@@ -34,7 +34,7 @@ namespace ShowInfo
 		}
 	}
 
-	public class ShowInformationManager
+	public class ShowInformationManager : IShowInformationManager
 	{
 		#region MEF helpers and imports
 
